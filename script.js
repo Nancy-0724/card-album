@@ -196,7 +196,8 @@ favoriteOnlyToggle.addEventListener("change", renderCards);
     metaCategory.style.backgroundColor = getColorForCategory(categoryName);
 
     const note = document.createElement("p");
-    note.innerHTML = card.note.replace(/\n/g, "<br>");
+    note.innerHTML = String(card.note || "").replace(/\n/g, "<br>");
+
 
 
     const favBtn = document.createElement("button");
