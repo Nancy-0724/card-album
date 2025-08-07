@@ -268,3 +268,8 @@ select#sortSelect {
   line-height: 1.4;
   margin: 2px 0;
 }
+.card-info p {
+  font-size: 0.9em;   /* ✅ 調整大小，例如 0.9em 或 14px */
+  line-height: 1.4;   /* 可搭配這行調整行距 */
+  margin: 4px 0;      /* 可視需求調整上下間距 */
+}
