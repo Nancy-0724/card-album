@@ -1,23 +1,11 @@
 <!DOCTYPE html>
-<html lang="en" >
-<head>
-  <meta charset="UTF-8">
-  <title>Untitled</title>
-  <link rel="stylesheet" href="./style.css">
-
-</head>
-<body>
-<!-- partial:index.partial.html -->
-<!DOCTYPE html>
 <html lang="zh-Hant">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>小卡圖鑑收集</title>
   <link rel="stylesheet" href="./style.css" />
 </head>
-
 <body>
   <div class="container">
     <h1>小卡圖鑑收集</h1>
@@ -45,21 +33,19 @@
       <button type="submit">加入收藏</button>
     </form>
 
-    <!-- 上傳中提示 -->
     <div id="loadingMsg" style="display:none; text-align:center; margin-top:10px; color:#1e90ff; font-weight:bold;">
       上傳中...
     </div>
 
     <hr />
 
-    <!-- 篩選分類 -->
+    <!-- 分類 + 排序 + 收藏切換 -->
     <label>篩選分類：
       <select id="filterCategory">
         <option value="">全部分類</option>
       </select>
     </label>
 
-    <!-- 排序選單 -->
     <label>排序方式：
       <select id="sortSelect">
         <option value="date-desc">時間（新到舊）</option>
@@ -71,24 +57,30 @@
       </select>
     </label>
 
+    <!-- ✅ 新增：只看收藏 -->
+    <label style="margin-left: 10px;">
+      <input type="checkbox" id="filterFavorite" />
+      只看收藏
+    </label>
+
+    <!-- ✅ 新增：匯出卡片圖片 -->
+    <button id="exportImageBtn" style="margin-left: 10px;">
+      匯出卡片圖片
+    </button>
+
     <h2>我的小卡收藏</h2>
 
-    <!-- 統計資訊 -->
     <div id="summary" style="margin-bottom: 10px; font-weight: bold; color: #555;">
       共 0 張卡片，總金額：0 元
     </div>
 
-    <!-- 卡片列表 -->
     <div id="cardList" class="card-list"></div>
   </div>
 
-  <!-- 引入 JavaScript -->
+  <!-- JavaScript -->
   <script src="./script.js" defer></script>
-</body>
 
-</html>
-<!-- partial -->
-  <script  src="./script.js"></script>
-
+  <!-- ✅ 新增：html2canvas CDN for 匯出圖片 -->
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 </body>
 </html>
