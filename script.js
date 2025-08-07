@@ -4,6 +4,8 @@ const cardList = document.getElementById("cardList");
 const sortSelect = document.getElementById("sortSelect");
 const filterCategory = document.getElementById("filterCategory");
 const loadingMsg = document.getElementById("loadingMsg");
+const favoriteOnlyToggle = document.getElementById("favoriteOnlyToggle");
+
 
 const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxuVzAwJflOs0GIJEm5_Gn3vg8m1PbjYB3NIeS00tixZ_xWGg4rA8pHneWUOe79HOA7OA/exec"; // ← 替換為你的 Apps Script 網址
 
@@ -140,11 +142,20 @@ async function renderCards() {
     cards = cards.filter(c => (c.category || "未分類") === currentCategory);
   }
 
+  if (favoriteOnlyToggle.checked) {
+  cards = cards.filter(c => c.isFavorite);
+}
+favoriteOnlyToggle.addEventListener("change", renderCards);
+
+  
   const sort = sortSelect.value;
   if (sort === "price-asc") cards.sort((a, b) => a.price - b.price);
   if (sort === "price-desc") cards.sort((a, b) => b.price - a.price);
   if (sort === "date-asc") cards.sort((a, b) => new Date(a.date) - new Date(b.date));
   if (sort === "date-desc") cards.sort((a, b) => new Date(b.date) - new Date(a.date));
+  if (sort === "title-asc") cards.sort((a, b) => a.title.localeCompare(b.title));
+  if (sort === "title-desc") cards.sort((a, b) => b.title.localeCompare(a.title));
+
 
   // ⬇️ 新增：總數量與總金額顯示區塊
   const totalCards = cards.length;
@@ -185,7 +196,8 @@ async function renderCards() {
     metaCategory.style.backgroundColor = getColorForCategory(categoryName);
 
     const note = document.createElement("p");
-    note.textContent = card.note;
+    note.innerHTML = card.note.replace(/\n/g, "<br>");
+
 
     const favBtn = document.createElement("button");
     favBtn.textContent = card.isFavorite ? "取消收藏" : "加入收藏";
