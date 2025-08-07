@@ -68,72 +68,6 @@ form.addEventListener("submit", async (e) => {
   loadingMsg.style.display = "none";
 });
 
-async function sendToServer(action, data) {
-  const formData = new URLSearchParams();
-  formData.append("action", action);
-  for (const key in data) {
-    const value = typeof data[key] === "object" ? JSON.stringify(data[key]) : data[key];
-    formData.append(key, value);
-  }
-
-  try {
-    const res = await fetch(APPS_SCRIPT_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: formData.toString()
-    });
-    return await res.json();
-  } catch (err) {
-    alert("伺服器錯誤：" + err.message);
-    return { success: false };
-  }
-}
-
-async function fetchCards() {
-  try {
-    const res = await fetch(APPS_SCRIPT_URL);
-    const rawData = await res.json();
-    const cards = Array.isArray(rawData) ? rawData : [];
-
-    return cards.map(card => {
-      try {
-        if (typeof card.category === "string") {
-          const parsed = JSON.parse(card.category);
-          card.category = Array.isArray(parsed) ? parsed : [String(parsed)];
-        } else if (!Array.isArray(card.category)) {
-          card.category = [];
-        }
-      } catch {
-        card.category = [];
-      }
-      return card;
-    });
-  } catch (err) {
-    alert("讀取資料失敗：" + err.message);
-    return [];
-  }
-}
-
-function formatDateToLocalYMD(dateStr) {
-  const date = new Date(dateStr);
-  const y = date.getFullYear();
-  const m = String(date.getMonth() + 1).padStart(2, "0");
-  const d = String(date.getDate()).padStart(2, "0");
-  return `${y}-${m}-${d}`;
-}
-
-function getColorForCategory(category) {
-  const colors = [
-    "#f44336", "#e91e63", "#9c27b0", "#3f51b5", "#2196f3",
-    "#009688", "#4caf50", "#ff9800", "#795548", "#607d8b"
-  ];
-  let hash = 0;
-  for (let i = 0; i < category.length; i++) {
-    hash = category.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  const index = Math.abs(hash) % colors.length;
-  return colors[index];
-}
 async function renderCards() {
   cardList.innerHTML = "";
   let cards = await fetchCards();
@@ -141,6 +75,16 @@ async function renderCards() {
   const currentCategory = filterCategory.value;
   const onlyFavorite = filterFavorite.checked;
 
+  // 先根據目前選擇的分類與是否收藏過濾卡片
+  if (currentCategory) {
+    cards = cards.filter(c => (c.category || []).includes(currentCategory));
+  }
+
+  if (onlyFavorite) {
+    cards = cards.filter(c => c.isFavorite);
+  }
+
+  // 計算分類數量，用於產生分類下拉選單
   const categoryCount = {};
   cards.forEach(c => {
     const tags = c.category || [];
@@ -157,14 +101,7 @@ async function renderCards() {
 
   filterCategory.value = currentCategory;
 
-  if (currentCategory) {
-    cards = cards.filter(c => (c.category || []).includes(currentCategory));
-  }
-
-  if (onlyFavorite) {
-    cards = cards.filter(c => c.isFavorite);
-  }
-
+  // 排序邏輯
   const sort = sortSelect.value;
   if (sort === "price-asc") cards.sort((a, b) => a.price - b.price);
   if (sort === "price-desc") cards.sort((a, b) => b.price - a.price);
@@ -173,6 +110,7 @@ async function renderCards() {
   if (sort === "title-asc") cards.sort((a, b) => a.title.localeCompare(b.title));
   if (sort === "title-desc") cards.sort((a, b) => b.title.localeCompare(a.title));
 
+  // 顯示統計資訊
   const totalCards = cards.length;
   const totalPrice = cards.reduce((sum, c) => sum + (Number(c.price) || 0), 0);
   const summaryDiv = document.getElementById("summary");
@@ -180,6 +118,7 @@ async function renderCards() {
     summaryDiv.textContent = `共 ${totalCards} 張卡片，總金額：${totalPrice} 元`;
   }
 
+  // 渲染卡片（這段維持不變）
   for (const card of cards) {
     const div = document.createElement("div");
     div.className = "card";
