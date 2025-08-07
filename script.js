@@ -3,6 +3,8 @@ const imageInput = document.getElementById("imageInput");
 const cardList = document.getElementById("cardList");
 const sortSelect = document.getElementById("sortSelect");
 const filterCategory = document.getElementById("filterCategory");
+const filterFavorite = document.getElementById("filterFavorite");
+const exportBtn = document.getElementById("exportImageBtn");
 const loadingMsg = document.getElementById("loadingMsg");
 
 const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyNkqTqVgxcOle53DkMGFFivz21AGHSjumP9qSjhayqjRhN3T22-dL0_YxXWLZVRe0/exec";
@@ -92,7 +94,6 @@ async function fetchCards() {
   try {
     const res = await fetch(APPS_SCRIPT_URL);
     const rawData = await res.json();
-
     const cards = Array.isArray(rawData) ? rawData : [];
 
     return cards.map(card => {
@@ -134,14 +135,13 @@ function getColorForCategory(category) {
   const index = Math.abs(hash) % colors.length;
   return colors[index];
 }
-
 async function renderCards() {
   cardList.innerHTML = "";
   let cards = await fetchCards();
 
   const currentCategory = filterCategory.value;
+  const onlyFavorite = filterFavorite.checked;
 
-  // 統計所有標籤
   const categoryCount = {};
   cards.forEach(c => {
     const tags = c.category || [];
@@ -160,6 +160,10 @@ async function renderCards() {
 
   if (currentCategory) {
     cards = cards.filter(c => (c.category || []).includes(currentCategory));
+  }
+
+  if (onlyFavorite) {
+    cards = cards.filter(c => c.isFavorite);
   }
 
   const sort = sortSelect.value;
@@ -203,6 +207,25 @@ async function renderCards() {
 
     const note = document.createElement("p");
     note.innerHTML = (card.note || "").replace(/\n/g, "<br>");
+
+    (card.category || []).forEach(cat => {
+      const tag = document.createElement("small");
+      tag.textContent = cat;
+      tag.className = "category-label";
+      tag.style.backgroundColor = getColorForCategory(cat);
+      info.appendChild(tag);
+    });
+
+    info.appendChild(title);
+    info.appendChild(document.createElement("br"));
+    info.appendChild(metaDate);
+    info.appendChild(document.createElement("br"));
+    info.appendChild(metaPrice);
+    info.appendChild(document.createElement("br"));
+    info.appendChild(note);
+
+    const buttonGroup = document.createElement("div");
+    buttonGroup.className = "button-group";
 
     const favBtn = document.createElement("button");
     favBtn.textContent = card.isFavorite ? "取消收藏" : "加入收藏";
@@ -261,25 +284,10 @@ async function renderCards() {
       }
     };
 
-    info.appendChild(title);
-    info.appendChild(document.createElement("br"));
-    info.appendChild(metaDate);
-    info.appendChild(document.createElement("br"));
-    info.appendChild(metaPrice);
-    info.appendChild(document.createElement("br"));
-
-    (card.category || []).forEach(cat => {
-      const tag = document.createElement("small");
-      tag.textContent = cat;
-      tag.className = "category-label";
-      tag.style.backgroundColor = getColorForCategory(cat);
-      info.appendChild(tag);
-    });
-
-    info.appendChild(note);
-    info.appendChild(favBtn);
-    info.appendChild(editBtn);
-    info.appendChild(delBtn);
+    buttonGroup.appendChild(favBtn);
+    buttonGroup.appendChild(editBtn);
+    buttonGroup.appendChild(delBtn);
+    info.appendChild(buttonGroup);
 
     div.appendChild(img);
     div.appendChild(info);
@@ -306,6 +314,41 @@ function createLabeledField(labelText, inputElement) {
   return wrapper;
 }
 
+// ✅ 匯出圖片功能
+async function exportImage() {
+  const cards = document.querySelectorAll(".card");
+  if (cards.length === 0) {
+    alert("沒有卡片可匯出");
+    return;
+  }
+
+  const exportContainer = document.createElement("div");
+  exportContainer.className = "export-grid";
+
+  cards.forEach(card => {
+    const clone = card.cloneNode(true);
+    clone.style.transform = "none";
+    exportContainer.appendChild(clone);
+  });
+
+  document.body.appendChild(exportContainer);
+
+  const canvas = await html2canvas(exportContainer, {
+    scale: 2,
+    backgroundColor: "#ffffff"
+  });
+
+  const link = document.createElement("a");
+  link.download = `card_export_${Date.now()}.png`;
+  link.href = canvas.toDataURL();
+  link.click();
+
+  document.body.removeChild(exportContainer);
+}
+
+// ✅ 綁定事件
 sortSelect.addEventListener("change", renderCards);
 filterCategory.addEventListener("change", renderCards);
+filterFavorite.addEventListener("change", renderCards);
+exportBtn.addEventListener("click", exportImage);
 renderCards();
