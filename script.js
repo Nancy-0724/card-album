@@ -4,7 +4,6 @@ const cardList = document.getElementById("cardList");
 const sortSelect = document.getElementById("sortSelect");
 const filterCategory = document.getElementById("filterCategory");
 const filterFavorite = document.getElementById("filterFavorite");
-const exportBtn = document.getElementById("exportImageBtn");
 const loadingMsg = document.getElementById("loadingMsg");
 
 const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyNkqTqVgxcOle53DkMGFFivz21AGHSjumP9qSjhayqjRhN3T22-dL0_YxXWLZVRe0/exec";
@@ -314,41 +313,11 @@ function createLabeledField(labelText, inputElement) {
   return wrapper;
 }
 
-// ✅ 匯出圖片功能
-async function exportImage() {
-  const cards = document.querySelectorAll(".card");
-  if (cards.length === 0) {
-    alert("沒有卡片可匯出");
-    return;
-  }
 
-  const exportContainer = document.createElement("div");
-  exportContainer.className = "export-grid";
-
-  cards.forEach(card => {
-    const clone = card.cloneNode(true);
-    clone.style.transform = "none";
-    exportContainer.appendChild(clone);
-  });
-
-  document.body.appendChild(exportContainer);
-
-  const canvas = await html2canvas(exportContainer, {
-    scale: 2,
-    backgroundColor: "#ffffff"
-  });
-
-  const link = document.createElement("a");
-  link.download = `card_export_${Date.now()}.png`;
-  link.href = canvas.toDataURL();
-  link.click();
-
-  document.body.removeChild(exportContainer);
-}
 
 // ✅ 綁定事件
 sortSelect.addEventListener("change", renderCards);
 filterCategory.addEventListener("change", renderCards);
 filterFavorite.addEventListener("change", renderCards);
-exportBtn.addEventListener("click", exportImage);
+
 renderCards();
