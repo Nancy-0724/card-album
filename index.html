@@ -27,54 +27,48 @@
       <label>收購價格（元）：
         <input type="number" id="priceInput" min="0" required />
       </label>
-      <label>標籤（用逗號分隔）：
-        <input type="text" id="categoryInput" placeholder="例如：限定,簽名版" />
+      <label>分類：
+        <input type="text" id="categoryInput" placeholder=" " />
       </label>
       <button type="submit">加入收藏</button>
     </form>
 
+    <!-- 上傳中提示 -->
     <div id="loadingMsg" style="display:none; text-align:center; margin-top:10px; color:#1e90ff; font-weight:bold;">
       上傳中...
     </div>
 
     <hr />
 
-    <!-- 分類 + 排序 + 收藏切換 -->
+    <!-- 篩選分類 -->
     <label>篩選分類：
       <select id="filterCategory">
         <option value="">全部分類</option>
       </select>
     </label>
 
+    <!-- 排序選單 -->
     <label>排序方式：
       <select id="sortSelect">
         <option value="date-desc">時間（新到舊）</option>
         <option value="date-asc">時間（舊到新）</option>
         <option value="price-asc">價格（低到高）</option>
         <option value="price-desc">價格（高到低）</option>
-        <option value="title-asc">標題（A-Z）</option>
-        <option value="title-desc">標題（Z-A）</option>
       </select>
-    </label>
-
-    <!-- ✅ 新增：只看收藏 -->
-    <label style="margin-left: 10px;">
-      <input type="checkbox" id="filterFavorite" />
-      只看收藏
     </label>
 
     <h2>我的小卡收藏</h2>
 
+    <!-- 統計資訊 -->
     <div id="summary" style="margin-bottom: 10px; font-weight: bold; color: #555;">
       共 0 張卡片，總金額：0 元
     </div>
 
+    <!-- 卡片列表 -->
     <div id="cardList" class="card-list"></div>
   </div>
 
-  <!-- JavaScript -->
+  <!-- 引入 JavaScript（只要一次！） -->
   <script src="./script.js" defer></script>
-
-  
 </body>
 </html>

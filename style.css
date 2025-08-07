@@ -98,9 +98,6 @@ button[type="submit"]:hover {
 .card-info {
   padding: 14px;
   flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start; /* ✅ 按鈕與標籤靠左 */
 }
 
 /* 標籤（編輯時） */
@@ -134,8 +131,6 @@ button[type="submit"]:hover {
   cursor: pointer;
   font-size: 0.85em;
   transition: background-color 0.2s;
-  width: auto;             /* ✅ 不拉長 */
-  display: inline-block;   /* ✅ 可以一行多顆 */
 }
 
 /* 按鈕色彩分組 */
@@ -191,16 +186,15 @@ select#sortSelect {
   border-radius: 6px;
 }
 
-/* ✅ 分類色彩標籤：修正寬度 */
+/* 分類色彩標籤 */
 .category-label {
   display: inline-block;
-  padding: 2px 10px;
+  padding: 2px 8px;
   border-radius: 12px;
   font-size: 0.8em;
   color: white;
-  margin: 6px 6px 10px 0;
-  width: auto;
-  max-width: 100%;
+  margin-top: 5px;
+  margin-bottom: 6px;
 }
 
 /* 統計資訊區塊樣式 */
@@ -216,56 +210,3 @@ select#sortSelect {
   color: #444;
   font-weight: 600;
 }
-
-/* ✅ 卡片內的按鈕群組排成一列 */
-.button-group {
-  display: flex;
-  gap: 8px;
-  margin-top: 8px;
-  flex-wrap: wrap;
-}
-
-/* ✅ 匯出用的隱藏卡片容器 */
-.export-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  padding: 20px;
-  background: white;
-  position: absolute;
-  top: -9999px;
-  left: -9999px;
-  width: 1000px; /* 匯出圖寬，可依需求調整 */
-  z-index: -1;
-}
-
-/* ✅ 匯出用卡片統一寬度與垂直排列 */
-.export-grid .card {
-  width: 220px;
-  flex-direction: column;
-  align-items: center;
-  padding: 10px;
-}
-
-.export-grid .card img {
-  width: 100%;
-  height: auto;
-  border: 1px solid #ddd;
-}
-
-.export-grid .card-info {
-  padding: 10px 0;
-  align-items: center;
-  text-align: center;
-}
-
-.export-grid .card-info button {
-  display: none; /* 匯出圖中不顯示按鈕 */
-}
-/* ✅ 優化卡片內文字行距 */
-.card-info p,
-.card-info small {
-  line-height: 1.4;
-  margin: 2px 0;
-}
-
