@@ -1,0 +1,218 @@
+/* 頁面背景與整體字體樣式 */
+body {
+  font-family: Arial, sans-serif;
+  background: #f3f3f3;
+  margin: 0;
+  padding: 20px;
+  color: #333;
+}
+
+/* 主容器樣式 */
+.container {
+  max-width: 700px;
+  margin: auto;
+  background: white;
+  padding: 20px 30px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 標題文字 */
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* 表單欄位區塊 */
+form label {
+  display: block;
+  margin-bottom: 15px;
+  font-weight: bold;
+}
+
+/* 輸入欄位與下拉選單統一樣式 */
+input[type="text"],
+input[type="date"],
+input[type="number"],
+textarea,
+select {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+  font-size: 0.95em;
+}
+
+/* 提交按鈕樣式 */
+button[type="submit"] {
+  padding: 10px 20px;
+  background-color: #1e90ff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+button[type="submit"]:hover {
+  background-color: #1c7ed6;
+}
+
+/* 卡片清單區塊 */
+.card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+/* 每張小卡外框 */
+.card {
+  display: flex;
+  align-items: center;
+  background: #fafafa;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s;
+}
+
+.card:hover {
+  transform: scale(1.01);
+}
+
+/* 卡片圖片區：改為直式比例 2:3 */
+.card img {
+  width: 120px;
+  height: 180px;
+  -o-object-fit: cover;
+     object-fit: cover;
+  -o-object-position: center;
+     object-position: center;
+  flex-shrink: 0;
+  border-right: 1px solid #ddd;
+}
+
+/* 卡片右側資訊區 */
+.card-info {
+  padding: 14px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+}
+
+/* 標籤（編輯時） */
+.card-info label {
+  font-weight: bold;
+  font-size: 0.9em;
+  margin-bottom: 4px;
+  display: block;
+  color: #444;
+}
+
+/* 編輯模式下輸入欄位樣式 */
+.card-info input,
+.card-info textarea {
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 6px 8px;
+  font-size: 0.9em;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+/* 卡片內按鈕統一樣式 */
+.card-info button {
+  margin-top: 6px;
+  margin-right: 8px;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85em;
+  transition: background-color 0.2s;
+}
+
+/* 按鈕色彩分組 */
+/* 收藏按鈕 */
+.card-info button:nth-of-type(1) {
+  background-color: #ffe066;
+}
+.card-info button:nth-of-type(1):hover {
+  background-color: #ffd43b;
+}
+
+/* 編輯按鈕 */
+.card-info button:nth-of-type(2) {
+  background-color: #74c0fc;
+  color: white;
+}
+.card-info button:nth-of-type(2):hover {
+  background-color: #4dabf7;
+}
+
+/* 刪除按鈕 */
+.card-info button:nth-of-type(3) {
+  background-color: #ff6b6b;
+  color: white;
+}
+.card-info button:nth-of-type(3):hover {
+  background-color: #fa5252;
+}
+
+/* 儲存按鈕（編輯模式 append） */
+.card-info button:contains("儲存") {
+  background-color: #fab005;
+  color: white;
+}
+.card-info button:contains("儲存"):hover {
+  background-color: #f59f00;
+}
+
+/* 取消按鈕（編輯模式 append） */
+.card-info button:contains("取消") {
+  background-color: #adb5bd;
+  color: white;
+}
+.card-info button:contains("取消"):hover {
+  background-color: #868e96;
+}
+
+/* 排序下拉選單 */
+select#sortSelect {
+  margin-bottom: 10px;
+  margin-top: 10px;
+  padding: 6px;
+  border-radius: 6px;
+}
+
+/* 分類色彩標籤 */
+.category-label {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.8em;
+  color: white;
+  margin-top: 5px;
+  margin-bottom: 6px;
+  margin-right: 6px;
+}
+
+/* 統計資訊區塊樣式 */
+#summary {
+  font-size: 1.05em;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding: 10px 14px;
+  background-color: #f1f3f5;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  text-align: center;
+  color: #444;
+  font-weight: 600;
+}
