@@ -6,7 +6,7 @@ const filterCategory = document.getElementById("filterCategory");
 const loadingMsg = document.getElementById("loadingMsg");
 
 const APPS_SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbxuVzAwJflOs0GIJEm5_Gn3vg8m1PbjYB3NIeS00tixZ_xWGg4rA8pHneWUOe79HOA7OA/exec";
+  "https://script.google.com/macros/s/AKfycbzWdDtQUXjDmXhET7PM6Wn8F9gPJftqOsZXIcGz1vJvd7S7iYRrAFH31pRviSWbg_m4/exec";
 
 async function uploadToDrive(file) {
   return new Promise((resolve) => {
