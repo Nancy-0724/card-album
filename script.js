@@ -5,8 +5,7 @@ const sortSelect = document.getElementById("sortSelect");
 const filterCategory = document.getElementById("filterCategory");
 const loadingMsg = document.getElementById("loadingMsg");
 
-const APPS_SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbyNkqTqVgxcOle53DkMGFFivz21AGHSjumP9qSjhayqjRhN3T22-dL0_YxXWLZVRe0/exec";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyNkqTqVgxcOle53DkMGFFivz21AGHSjumP9qSjhayqjRhN3T22-dL0_YxXWLZVRe0/exec";
 
 async function uploadToDrive(file) {
   return new Promise((resolve) => {
@@ -54,10 +53,9 @@ form.addEventListener("submit", async (e) => {
     note: document.getElementById("noteInput").value,
     date: document.getElementById("dateInput").value,
     price: Number(document.getElementById("priceInput").value),
-    category: document
-      .getElementById("categoryInput")
-      .value.split(",")
-      .map((t) => t.trim())
+    category: document.getElementById("categoryInput").value
+      .split(",")
+      .map(t => t.trim())
       .filter(Boolean),
     imageUrl,
     isFavorite: false
@@ -73,8 +71,7 @@ async function sendToServer(action, data) {
   const formData = new URLSearchParams();
   formData.append("action", action);
   for (const key in data) {
-    const value =
-      typeof data[key] === "object" ? JSON.stringify(data[key]) : data[key];
+    const value = typeof data[key] === "object" ? JSON.stringify(data[key]) : data[key];
     formData.append(key, value);
   }
 
@@ -94,15 +91,23 @@ async function sendToServer(action, data) {
 async function fetchCards() {
   try {
     const res = await fetch(APPS_SCRIPT_URL);
-    const cards = await res.json();
-    // 將 category 欄轉回 array
-    return cards.map((card) => ({
-      ...card,
-      category:
-        typeof card.category === "string"
-          ? JSON.parse(card.category)
-          : card.category
-    }));
+    const rawData = await res.json();
+
+    const cards = Array.isArray(rawData) ? rawData : [];
+
+    return cards.map(card => {
+      try {
+        if (typeof card.category === "string") {
+          const parsed = JSON.parse(card.category);
+          card.category = Array.isArray(parsed) ? parsed : [String(parsed)];
+        } else if (!Array.isArray(card.category)) {
+          card.category = [];
+        }
+      } catch {
+        card.category = [];
+      }
+      return card;
+    });
   } catch (err) {
     alert("讀取資料失敗：" + err.message);
     return [];
@@ -119,16 +124,8 @@ function formatDateToLocalYMD(dateStr) {
 
 function getColorForCategory(category) {
   const colors = [
-    "#f44336",
-    "#e91e63",
-    "#9c27b0",
-    "#3f51b5",
-    "#2196f3",
-    "#009688",
-    "#4caf50",
-    "#ff9800",
-    "#795548",
-    "#607d8b"
+    "#f44336", "#e91e63", "#9c27b0", "#3f51b5", "#2196f3",
+    "#009688", "#4caf50", "#ff9800", "#795548", "#607d8b"
   ];
   let hash = 0;
   for (let i = 0; i < category.length; i++) {
@@ -146,40 +143,32 @@ async function renderCards() {
 
   // 統計所有標籤
   const categoryCount = {};
-  cards.forEach((c) => {
+  cards.forEach(c => {
     const tags = c.category || [];
-    tags.forEach((tag) => {
+    tags.forEach(tag => {
       categoryCount[tag] = (categoryCount[tag] || 0) + 1;
     });
   });
 
   const uniqueCategories = Object.keys(categoryCount);
-  filterCategory.innerHTML =
-    `<option value="">全部分類</option>` +
-    uniqueCategories
-      .map(
-        (cat) =>
-          `<option value="${cat}">${cat} (${categoryCount[cat]})</option>`
-      )
-      .join("");
+  filterCategory.innerHTML = `<option value="">全部分類</option>` +
+    uniqueCategories.map(cat =>
+      `<option value="${cat}">${cat} (${categoryCount[cat]})</option>`
+    ).join("");
 
   filterCategory.value = currentCategory;
 
   if (currentCategory) {
-    cards = cards.filter((c) => (c.category || []).includes(currentCategory));
+    cards = cards.filter(c => (c.category || []).includes(currentCategory));
   }
 
   const sort = sortSelect.value;
   if (sort === "price-asc") cards.sort((a, b) => a.price - b.price);
   if (sort === "price-desc") cards.sort((a, b) => b.price - a.price);
-  if (sort === "date-asc")
-    cards.sort((a, b) => new Date(a.date) - new Date(b.date));
-  if (sort === "date-desc")
-    cards.sort((a, b) => new Date(b.date) - new Date(a.date));
-  if (sort === "title-asc")
-    cards.sort((a, b) => a.title.localeCompare(b.title));
-  if (sort === "title-desc")
-    cards.sort((a, b) => b.title.localeCompare(a.title));
+  if (sort === "date-asc") cards.sort((a, b) => new Date(a.date) - new Date(b.date));
+  if (sort === "date-desc") cards.sort((a, b) => new Date(b.date) - new Date(a.date));
+  if (sort === "title-asc") cards.sort((a, b) => a.title.localeCompare(b.title));
+  if (sort === "title-desc") cards.sort((a, b) => b.title.localeCompare(a.title));
 
   const totalCards = cards.length;
   const totalPrice = cards.reduce((sum, c) => sum + (Number(c.price) || 0), 0);
@@ -197,8 +186,7 @@ async function renderCards() {
     img.alt = "小卡圖片";
     img.referrerPolicy = "no-referrer";
     img.onerror = function () {
-      this.src =
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/100px-No_image_available.svg.png";
+      this.src = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/100px-No_image_available.svg.png";
     };
 
     const info = document.createElement("div");
@@ -234,10 +222,7 @@ async function renderCards() {
       const titleInput = createInput("text", card.title);
       const dateInput = createInput("date", formatDateToLocalYMD(card.date));
       const priceInput = createInput("number", card.price);
-      const categoryInput = createInput(
-        "text",
-        (card.category || []).join(", ")
-      );
+      const categoryInput = createInput("text", (card.category || []).join(", "));
       const noteInput = document.createElement("textarea");
       noteInput.rows = 3;
       noteInput.value = card.note;
@@ -248,10 +233,7 @@ async function renderCards() {
         card.title = titleInput.value;
         card.date = dateInput.value;
         card.price = Number(priceInput.value);
-        card.category = categoryInput.value
-          .split(",")
-          .map((t) => t.trim())
-          .filter(Boolean);
+        card.category = categoryInput.value.split(",").map(t => t.trim()).filter(Boolean);
         card.note = noteInput.value;
         await sendToServer("updateCard", card);
         await renderCards();
@@ -286,7 +268,7 @@ async function renderCards() {
     info.appendChild(metaPrice);
     info.appendChild(document.createElement("br"));
 
-    (card.category || []).forEach((cat) => {
+    (card.category || []).forEach(cat => {
       const tag = document.createElement("small");
       tag.textContent = cat;
       tag.className = "category-label";
