@@ -145,7 +145,7 @@ async function renderCards() {
   if (favoriteOnlyToggle.checked) {
   cards = cards.filter(c => c.isFavorite);
 }
-favoriteOnlyToggle.addEventListener("change", renderCards);
+//favoriteOnlyToggle.addEventListener("change", renderCards);
 
   
   const sort = sortSelect.value;
@@ -298,4 +298,6 @@ function createLabeledField(labelText, inputElement) {
 
 sortSelect.addEventListener("change", renderCards);
 filterCategory.addEventListener("change", renderCards);
+favoriteOnlyToggle.addEventListener("change", renderCards); // ← 移到這裡
 renderCards();
+
