@@ -117,10 +117,15 @@ function getColorForCategory(category) {
   return colors[index];
 }
 
+let allImageUrls = []; // 全部卡片圖片 URL
+let currentIndex = 0;  // 目前顯示哪一張
+
 async function renderCards() {
   cardList.innerHTML = "";
   let cards = await fetchCards();
 
+  allImageUrls = cards.map(c => c.imageUrl);
+  
   const currentCategory = filterCategory.value;
 
   // 分類計數
@@ -167,17 +172,28 @@ if (summaryDiv) {
 }
 
 
-  for (const card of cards) {
-    const div = document.createElement("div");
-    div.className = "card";
+  allImageUrls = cards.map(c => c.imageUrl); // 放在 renderCards 一開始（抓完 cards 後）
 
-    const img = document.createElement("img");
-    img.src = card.imageUrl;
-    img.alt = "小卡圖片";
-    img.referrerPolicy = "no-referrer";
-    img.onerror = function () {
-      this.src = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/100px-No_image_available.svg.png";
-    };
+for (let i = 0; i < cards.length; i++) {
+  const card = cards[i];
+  const div = document.createElement("div");
+  div.className = "card";
+
+  const img = document.createElement("img");
+  img.src = card.imageUrl;
+  img.alt = "小卡圖片";
+  img.referrerPolicy = "no-referrer";
+  img.onerror = function () {
+    this.src = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/100px-No_image_available.svg.png";
+  };
+
+  // 🔹 點擊圖片開啟大圖
+  img.addEventListener("click", () => {
+    currentIndex = i;
+    openLightbox(card.imageUrl);
+  });
+
+  
 
     const info = document.createElement("div");
     info.className = "card-info";
@@ -301,3 +317,40 @@ filterCategory.addEventListener("change", renderCards);
 favoriteOnlyToggle.addEventListener("change", renderCards); // ← 移到這裡
 renderCards();
 
+function openLightbox(url) {
+  const lightbox = document.getElementById("lightbox");
+  const lightboxImg = document.getElementById("lightbox-img");
+  lightboxImg.src = url;
+  lightbox.style.display = "flex";
+}
+
+function closeLightbox() {
+  document.getElementById("lightbox").style.display = "none";
+}
+
+function showPrevImage() {
+  currentIndex = (currentIndex - 1 + allImageUrls.length) % allImageUrls.length;
+  document.getElementById("lightbox-img").src = allImageUrls[currentIndex];
+}
+
+function showNextImage() {
+  currentIndex = (currentIndex + 1) % allImageUrls.length;
+  document.getElementById("lightbox-img").src = allImageUrls[currentIndex];
+}
+
+// 綁定燈箱事件
+document.getElementById("lightbox-close").addEventListener("click", closeLightbox);
+document.getElementById("lightbox-prev").addEventListener("click", showPrevImage);
+document.getElementById("lightbox-next").addEventListener("click", showNextImage);
+
+// 按 Esc 關閉
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") closeLightbox();
+  if (e.key === "ArrowLeft") showPrevImage();
+  if (e.key === "ArrowRight") showNextImage();
+});
+
+// 點背景關閉
+document.getElementById("lightbox").addEventListener("click", (e) => {
+  if (e.target.id === "lightbox") closeLightbox();
+});
