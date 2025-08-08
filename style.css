@@ -240,8 +240,8 @@ select#sortSelect {
   user-select: none;
 }
 
-#lightbox-prev { left: 30px; }
-#lightbox-next { right: 30px; }
+#lightbox-prev { left: 10px; }
+#lightbox-next { right: 10px; }
 
 #lightbox-close {
   position: absolute;
