@@ -159,11 +159,13 @@ favoriteOnlyToggle.addEventListener("change", renderCards);
 
   // ⬇️ 新增：總數量與總金額顯示區塊
   const totalCards = cards.length;
-  const totalPrice = cards.reduce((sum, c) => sum + (Number(c.price) || 0), 0);
-  const summaryDiv = document.getElementById("summary");
-  if (summaryDiv) {
-    summaryDiv.textContent = `共 ${totalCards} 張卡片，總金額：${totalPrice} 元`;
-  }
+const totalPrice = cards.reduce((sum, c) => sum + (Number(c.price) || 0), 0);
+const avgPrice = totalCards > 0 ? (totalPrice / totalCards).toFixed(2) : 0;
+const summaryDiv = document.getElementById("summary");
+if (summaryDiv) {
+  summaryDiv.textContent = `共 ${totalCards} 張卡，共 ${totalPrice} 元，均價 ${avgPrice} 元`;
+}
+
 
   for (const card of cards) {
     const div = document.createElement("div");
